@@ -7,13 +7,12 @@ class Auth:
     def __init__(self,username, password,  db : User_manager):
         self.password = password
         self.username = username
-        self.db = db
+        self.db: User_manager = db
 
     def login(self):
-        u = self.db.search_by_username(self.username)
+        u = self.db.search_user(self.username)
 
         if u.password == self.password:
-                print("Login Successful")
                 return u
 
         return None
@@ -22,11 +21,12 @@ class Auth:
         if self.db.duplicate_user(self.username):
             return None
         else:
-            self.db.add_user(User(self.username, self.password, []))
+            u = User(self.username, self.password)
+            self.db.add_user(u)
+            return u
 
 
     def logout(self):
-        print("logout success")
         return  None
 
 
@@ -41,18 +41,25 @@ def print_menu():
     print("5.List of message")
     print("0.Exit")
 
-def main():
-    logout = False
-    while not logout:
+def preview_menu():
+    print("1.login")
+    print("2.signup")
+
+    choice = int(input("Enter your choice: "))
+    if choice == 1:
         user_name = input("Enter your username: ")
         password = input("Enter your password: ")
         user = Auth(user_name, password, User_manager)
-        if user.logout() == None:
-            logout = True
+        return user.login()
 
-        if user.login() == None:
-            user.signup()
-            user.login()
+    elif choice == 2:
+        user_name = input("Enter your username: ")
+        password = input("Enter your password: ")
+        user = Auth(user_name, password, User_manager)
+        return user.signup()
+
+def main():
+        active_user = preview_menu()
         while True:
             print_menu()
             choice = input("Enter your choice: ")
@@ -61,7 +68,8 @@ def main():
                 print("Bye")
                 break
             elif choice == "1":
-                pass
+                user = User(user_name, password, [])
+
             elif choice == "2":
                 pass
             elif choice == "3":
