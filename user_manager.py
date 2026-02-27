@@ -1,4 +1,3 @@
-from re import search
 from typing import Any
 
 
@@ -19,10 +18,9 @@ class User_manager:
         else:
             return False
 
-    def add_user(self, User)-> bool:
-        if self.duplicate_user(User.username) == False:
-            self.users.append(User)
+    def add_user(self, user)-> bool:
+        if not self.duplicate_user(user.username):
+            self.users.append(user)
             return True
         else:
             return False
-

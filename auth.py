@@ -1,8 +1,6 @@
 from user_manager import  User_manager
 from user import User
 
-
-
 class Auth:
     def __init__(self,username, password,  db : User_manager):
         self.password = password
@@ -25,14 +23,6 @@ class Auth:
             self.db.add_user(u)
             return u
 
-
-    def logout(self):
-        return  None
-
-
-
-
-
 def print_menu():
     print("1.Follow")
     print("2.List of followers")
@@ -41,42 +31,57 @@ def print_menu():
     print("5.List of message")
     print("0.Exit")
 
-def preview_menu():
+def preview_menu(user_manager : User_manager):
     print("1.login")
     print("2.signup")
 
     choice = int(input("Enter your choice: "))
+
     if choice == 1:
         user_name = input("Enter your username: ")
         password = input("Enter your password: ")
-        user = Auth(user_name, password, User_manager)
-        return user.login()
+        auth = Auth(user_name, password, user_manager)
+        return auth.login()
 
     elif choice == 2:
         user_name = input("Enter your username: ")
         password = input("Enter your password: ")
-        user = Auth(user_name, password, User_manager)
-        return user.signup()
+        auth = Auth(user_name, password, user_manager)
+        return auth.signup()
 
 def main():
-        active_user = preview_menu()
-        while True:
+    user_manager = User_manager()
+    while True:
+        active_user = preview_menu(user_manager)
+        active_user: User
+        while active_user:
             print_menu()
             choice = input("Enter your choice: ")
 
             if choice == "0":
                 print("Bye")
+                active_user = None
                 break
             elif choice == "1":
-                user = User(user_name, password, [])
+                user_name = input("Enter your username: ")
+                user = user_manager.search_user(user_name)
+                if user:
+                    active_user.follow(user)
 
             elif choice == "2":
-                pass
-            elif choice == "3":
-                pass
-            elif choice == "4":
-                pass
-            elif choice == "5":
-                pass
+                active_user.print_followers()
 
+            elif choice == "3":
+                active_user.print_following()
+
+            elif choice == "4":
+                active_user.print_following()
+                receiver = int(input("Enter your receiver: ")) - 1
+                message = input("Enter your message: ")
+                active_user.send_message(message, receiver)
+
+            elif choice == "5":
+                active_user.view_inbox(only_read=True)
+
+main()
 

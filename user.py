@@ -1,11 +1,6 @@
 from typing import Any
 from user_manager import User_manager
 from message import Message
-from auth import Auth
-
-import user_manager
-from re import search
-
 
 
 class User:
@@ -16,16 +11,13 @@ class User:
         self.followers = []
         self.following = []
 
-    def follow(self, username) -> Any | None:
-        if username not in self.following:
-            if User_manager.search_user(username) != None:
-                self.following.append(User_manager.search_user(username))
-        else:
-            return False
+    def follow(self, other_user) -> Any | None:
+        self.following.append(other_user)
+        other_user.followers.append(self)
 
     def send_message(self, text: str, reciever: int) -> None:
-        message = Message(self.username, text, User_manager.users[reciever].username)
-        User_manager.users[reciever].inbox.append(message)
+        message = Message(self.username, text, self.following[reciever].username)
+        self.following[reciever].inbox.append(message)
 
     def view_inbox(self , only_read) -> None:
         for message in self.inbox:
@@ -33,6 +25,14 @@ class User:
 
     def get_username(self):
         return self.username
+
+    def print_followers(self):
+        for i, user in enumerate(self.followers):
+            print(f"{i + 1}. {user.username}")
+
+    def print_following(self):
+        for i, user in enumerate(self.following):
+            print(f"{i + 1}. {user.username}")
 
 
 
