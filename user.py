@@ -12,7 +12,7 @@ class User:
     def add_message_to_inbox(self, message: Message) -> None:
         pass
 
-    def view_message(self ,sender) -> None:
+    def view_inbox(self ,message) -> None:
         pass
 
 
